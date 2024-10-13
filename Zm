@@ -1,0 +1,55 @@
+import speech_recognition as sr
+import pyttsx3
+import datetime
+import webbrowser
+import spacy
+
+# Initialize speech recognizer, text-to-speech engine, and NLP model
+recognizer = sr.Recognizer()
+engine = pyttsx3.init()
+nlp = spacy.load("en_core_web_sm")  # Load a spaCy language model
+
+def listen():
+    # ... (same as before)
+
+def speak(text):
+    # ... (same as before)
+
+def handle_command(command):
+    """Processes user commands and takes appropriate actions."""
+    doc = nlp(command)  # Process the command with spaCy
+
+    # Example: Open websites
+    for token in doc:
+        if token.like_url:
+            speak(f"Opening {token.text}")
+            webbrowser.open(token.text)
+            return
+
+    # Example: Get current time
+    if "time" in command:
+        current_time = datetime.datetime.now().strftime("%I:%M %p")
+        speak(f"The current time is {current_time}")
+        return
+
+    # Example: Simple conversation
+    if "how are you" in command:
+        speak("I'm doing well, thank you!")
+        return
+
+    speak("I'm still learning. Can you rephrase that?")
+
+def main():
+    """Main function to run the assistant."""
+    speak("Hello, how can I assist you today?")
+    while True:
+        command = listen()
+        if command is None:
+            continue
+        if "exit" in command:
+            speak("Goodbye!")
+            break
+        handle_command(command)
+
+if __name__ == "__main__":
+    main()
